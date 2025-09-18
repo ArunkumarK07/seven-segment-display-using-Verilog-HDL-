@@ -40,50 +40,54 @@ To design and simulate a seven-segment display driver using Verilog HDL, and ver
 
 ## Verilog Code for Seven-Segment Display  
 
-```verilog
-// seven_segment_display.v
-module seven_segment_display (
-    input wire [3:0] binary_input,
-    output reg [6:0] seg_output
-);
-
-always @(*) begin
-    case (binary_input)
-        
-        
-        default: seg_output = 7'b0000000; // blank or error
-    endcase
+timescale 1ns / 1ps
+module BCD_7Seg (bcd,seg);
+input  [3:0] bcd;   
+output reg [6:0] seg;
+always @ (bcd) begin
+case (bcd)
+4'b0000: seg = 7'b0000001; 
+4'b0001: seg = 7'b1001111; 
+4'b0010: seg = 7'b0010010; 
+4'b0011: seg = 7'b0000110; 
+4'b0100: seg = 7'b1001100; 
+4'b0101: seg = 7'b0100100; 
+4'b0110: seg = 7'b0100000; 
+4'b0111: seg = 7'b0001111; 
+4'b1000: seg = 7'b0000000; 
+4'b1001: seg = 7'b0000100; 
+default: seg = 7'b1111111; 
+endcase
 end
-
 endmodule
+
 ```
 ## Testbench for Seven-Segment Display
-```verilog
+module tb_BCD_7Seg;
+reg [3:0] bcd;        
+wire [6:0] seg;   
+BCD_7Seg uut (bcd,seg);
+initial begin 
+$monitor("Time=%0t BCD=%b (%0d) Segments=%b", $time, bcd, bcd, seg);
 
-`timescale 1ns / 1ps
-module seven_segment_display_tb;
-// Inputs
-reg [3:0] binary_input;
-// Outputs
-wire [6:0] seg_output;
-// Instantiate the Unit Under Test (UUT)
-seven_segment_display uut (
-    .binary_input(binary_input),
-    .seg_output(seg_output)
-);
-// Test procedure
-initial begin
-    // Initialize inputs
-    binary_input = 4'b0000;
-
+bcd = 4'b0000; #10; 
+bcd = 4'b0001; #10; 
+bcd = 4'b0010; #10; 
+bcd = 4'b0011; #10; 
+bcd = 4'b0100; #10; 
+bcd = 4'b0101; #10; 
+bcd = 4'b0110; #10; 
+bcd = 4'b0111; #10; 
+bcd = 4'b1000; #10; 
+bcd = 4'b1001; #10; 
+bcd = 4'b1111; #10;
+$finish;
 end
-
-
 endmodule
 ```
 ## Simulated Output
 
-_____ Keep Simulated output ___________
+![7seg display code](https://github.com/user-attachments/assets/0a5b9670-8eae-4a4b-92bb-3144305ef0aa)
 
 ---
 
